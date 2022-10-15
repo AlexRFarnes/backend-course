@@ -10,6 +10,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //   storage: './backend-project',
 // });
 
+app.use('view engine', 'pug');
+
 app.post('pending-tasks', (req, resp) => {});
 
 app.listen(3000);
