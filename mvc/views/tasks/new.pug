@@ -1,0 +1,8 @@
+doctype html
+html
+    head
+        title Tasks 
+    body
+        form(action="/tasks" method="POST")
+            textarea(name="description" placeholder="Write the description for your new task")
+            input(type="submit" value="Save task")
