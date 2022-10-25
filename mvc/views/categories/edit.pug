@@ -1,0 +1,9 @@
+doctype html
+html
+    head
+        title Edit Category 
+    body
+        form(action=`/categories/${category.id}?_method=PUT` method="POST")
+            input(type="text" name="title" placeholder="Write the title for your category")
+            input(type="color" name="color")
+            input(type="submit" value="Save category")

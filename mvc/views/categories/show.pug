@@ -1,0 +1,10 @@
+doctype html
+html
+    head
+        title Category 
+    body
+        h1= category.title
+        p Category color:
+            span(style={'display': 'block', 'height': '24px', 'width': '48px', 'border-radius': '1000px','background-color': `${category.color}`, 'margin': '6px 0 24px'})
+        form(action=`/categories/${category.id}?_method=DELETE` method="POST")
+            input(type="submit" value="Delete Category")

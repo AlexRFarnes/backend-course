@@ -11,8 +11,39 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      User.hasMany(models.Task, {
+        as: 'tasks',
+      });
+    }
+    // instance method
+    authenticatePassword(password) {
+      return new Promise((resolve, reject) => {
+        bcrypt.compare(password, this.password_hash, (err, valid) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(valid);
+          }
+        });
+      });
     }
   }
+  // class method
+  User.login = function (email, password) {
+    // 1. find the user
+    return User.findOne({
+      where: {
+        email,
+      },
+    }).then(user => {
+      // 2. hash the password to compare it the saved hashed password
+      if (!user) return null;
+      return user
+        .authenticatePassword(password)
+        .then(valid => (valid ? user : null));
+    });
+  };
+
   User.init(
     {
       email: {
@@ -40,5 +71,6 @@ module.exports = (sequelize, DataTypes) => {
       modelName: 'User',
     }
   );
+
   return User;
 };

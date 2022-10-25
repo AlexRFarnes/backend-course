@@ -1,0 +1,9 @@
+doctype html
+html
+    head
+        title Categories 
+    body
+        h1 Categories
+        ul
+            each category in categories
+                li(style={'display': 'block','border-left':`6px solid ${category.color}`, 'padding': '4px 0px 4px 6px'})= category.title
