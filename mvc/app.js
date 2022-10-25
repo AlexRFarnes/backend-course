@@ -4,6 +4,7 @@ const methodOverride = require('method-override');
 const session = require('express-session');
 const findUserMiddleware = require('./middlewares/findUser');
 const authUserMiddleware = require('./middlewares/authUser');
+const socketio = require('socket.io');
 
 const app = express();
 
@@ -33,4 +34,40 @@ app.get('/', (req, resp) => {
   resp.render('home', { user: req.user });
 });
 
-app.listen(3000);
+const server = app.listen(3000);
+
+const io = socketio(server);
+let sockets = {};
+
+let usersCount = 0;
+
+io.on('connection', socket => {
+  const userId = socket.request._query.loggeduser;
+
+  if (userId) {
+    sockets[userId] = socket;
+  }
+
+  usersCount++;
+  io.emit('count_updated', { counter: usersCount });
+
+  socket.on('new_task', data => {
+    if (data.userId) {
+      const userSocket = sockets[data.userId];
+      if (!userSocket) return;
+      userSocket.emit('new_task', data);
+    }
+  });
+
+  socket.on('disconnect', () => {
+    Object.keys(sockets).forEach(userId => {
+      let s = sockets[userId];
+      if (s.id === socket.id) sockets[userId] = null;
+    });
+
+    usersCount--;
+    io.emit('count_updated', { counter: usersCount });
+  });
+});
+
+const client = require('./realtime/client');

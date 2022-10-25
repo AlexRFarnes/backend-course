@@ -9,7 +9,7 @@ module.exports = {
   },
   show: function (req, resp) {
     Task.findByPk(req.params.id, {
-      include: [{ model: User, as: 'user' }],
+      include: [{ model: User, as: 'user' }, 'categories'],
     }).then(task => {
       resp.render('tasks/show', { task });
     });

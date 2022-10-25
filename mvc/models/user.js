@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       User.hasMany(models.Task, {
         as: 'tasks',
+        foreignKey: 'userId',
       });
     }
     // instance method

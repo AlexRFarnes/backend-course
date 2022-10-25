@@ -1,4 +1,5 @@
 'use strict';
+const socket = require('../realtime/client');
 const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
@@ -12,6 +13,12 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Task.belongsTo(models.User, {
         as: 'user',
+        foreignKey: 'userId',
+      });
+
+      Task.belongsToMany(models.Category, {
+        through: 'TasksCategories',
+        as: 'categories',
       });
     }
   }
@@ -20,6 +27,13 @@ module.exports = (sequelize, DataTypes) => {
       description: DataTypes.TEXT,
     },
     {
+      hooks: {
+        afterCreate: (task, options) => {
+          socket.emit('new_task', {
+            task,
+          });
+        },
+      },
       sequelize,
       modelName: 'Task',
     }
